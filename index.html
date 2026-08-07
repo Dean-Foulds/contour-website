@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contour — Speed, gradient and elevation, on your ride footage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E161E;
+    --surface: #16212B;
+    --surface-2: #1C2A36;
+    --text: #F5F7FA;
+    --muted: #8A9BAE;
+    --blue: #4696FF;
+    --red: #FF2D2D;
+    --border: #253544;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+  }
+  .brand svg { width: 26px; height: 26px; }
+  .navlinks {
+    display: flex;
+    gap: 28px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .navlinks a:hover { color: var(--text); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    padding: 60px 0 40px;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 40px;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: 3.1rem;
+    line-height: 1.06;
+    margin-bottom: 22px;
+  }
+  .hero h1 .accent { color: var(--red); }
+  .hero p.lede {
+    font-size: 1.08rem;
+    color: var(--muted);
+    max-width: 440px;
+    margin-bottom: 34px;
+  }
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 2px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #5aa3ff; transform: translateY(-1px); }
+  .btn-ghost {
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+  /* Hero chart visual */
+  .chart-visual {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 20px 20px 0;
+  }
+  .chart-visual svg { display: block; width: 100%; height: auto; }
+  .chart-readout {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 4px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: -1px;
+  }
+  .readout-item .label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .readout-item .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+  .readout-item .value.blue { color: var(--blue); }
+  .readout-item .value.red { color: var(--red); }
+
+  /* ---------- STATS STRIP ---------- */
+  .stats-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 26px 0;
+  }
+  .stats-strip .wrap {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .stat b { color: var(--text); font-weight: 500; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .section { padding: 90px 0; }
+  .section-head { max-width: 560px; margin-bottom: 54px; }
+  .section-head .eyebrow { margin-bottom: 12px; }
+  .section-head h2 { font-size: 2rem; margin-bottom: 14px; }
+  .section-head p { color: var(--muted); font-size: 1rem; }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .step {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 30px 26px;
+    background: var(--surface);
+  }
+  .step .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--blue);
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+  }
+  .step h3 { font-size: 1.15rem; margin-bottom: 10px; }
+  .step p { color: var(--muted); font-size: 0.92rem; }
+
+  /* ---------- FEATURES ---------- */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 20px;
+  }
+  .feature-lead {
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 260px;
+  }
+  .feature-lead .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+  .feature-lead h3 { font-size: 1.5rem; margin-bottom: 10px; }
+  .feature-lead p { color: var(--muted); max-width: 400px; }
+
+  .feature-small-grid {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .feature-small {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 26px;
+  }
+  .feature-small h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .feature-small p { color: var(--muted); font-size: 0.9rem; }
+
+  .lang-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .lang-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted);
+  }
+
+  /* ---------- CLOSING CTA ---------- */
+  .closing {
+    text-align: center;
+    padding: 100px 0 90px;
+    border-top: 1px solid var(--border);
+  }
+  .closing h2 { font-size: 2.2rem; margin-bottom: 16px; }
+  .closing p { color: var(--muted); margin-bottom: 32px; }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 36px 0;
+  }
+  footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer .brand-mini {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  footer .foot-links {
+    display: flex;
+    gap: 22px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  footer .foot-links a:hover { color: var(--text); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.3rem; }
+    .steps { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .navlinks { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="12,82 33,43 45,58 63,29 88,82" fill="#4696FF"/>
+        <circle cx="55" cy="40" r="5" fill="#FF2D2D"/>
+      </svg>
+      Contour
+    </div>
+    <div class="navlinks">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="mailto:admin@contour-map.com">Contact</a>
+    </div>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">// for cyclists who film their rides</div>
+      <h1>Your ride data,<br>burned into<br>the <span class="accent">footage</span>.</h1>
+      <p class="lede">Contour overlays speed, gradient and elevation from your cycling computer straight onto your ride video — rendered entirely on your phone. No uploads, no cloud, nothing leaves your device.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:admin@contour-map.com?subject=Notify%20me%20when%20Contour%20launches">Get notified at launch</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+    </div>
+
+    <div class="chart-visual">
+      <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4696FF" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#4696FF" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+        <path d="M 0.0,229.8 Q 0.0,229.8 10.2,230.2 Q 20.3,230.6 30.5,228.9 Q 40.7,227.2 50.8,223.9 Q 61.0,220.6 71.2,217.4 Q 81.4,214.1 91.5,211.8 Q 101.7,209.6 111.9,207.5 Q 122.0,205.4 132.2,201.0 Q 142.4,196.6 152.5,188.0 Q 162.7,179.4 172.9,166.7 Q 183.1,154.0 193.2,140.2 Q 203.4,126.3 213.6,115.0 Q 223.7,103.8 233.9,97.5 Q 244.1,91.2 254.2,89.7 Q 264.4,88.1 274.6,89.3 Q 284.7,90.5 294.9,92.3 Q 305.1,94.1 315.3,96.1 Q 325.4,98.1 335.6,101.2 Q 345.8,104.3 355.9,109.3 Q 366.1,114.2 376.3,120.2 Q 386.4,126.3 396.6,131.2 Q 406.8,136.1 416.9,137.9 Q 427.1,139.7 437.3,138.3 Q 447.5,136.8 457.6,134.4 Q 467.8,132.0 478.0,131.6 Q 488.1,131.2 498.3,134.6 Q 508.5,137.9 518.6,144.0 Q 528.8,150.1 539.0,156.0 Q 549.2,162.0 559.3,165.2 Q 569.5,168.4 579.7,168.3 Q 589.8,168.2 600.0,166.3 Q 610.2,164.4 620.3,162.8 Q 630.5,161.2 640.7,160.8 Q 650.8,160.3 661.0,160.3 Q 671.2,160.3 681.4,159.6 Q 691.5,158.9 701.7,157.7 Q 711.9,156.5 722.0,156.7 Q 732.2,156.9 742.4,160.9 Q 752.5,165.0 762.7,173.7 Q 772.9,182.5 783.1,194.3 Q 793.2,206.1 803.4,217.3 Q 813.6,228.4 823.7,235.7 Q 833.9,243.0 844.1,244.5 Q 854.2,246.0 864.4,245.9 Q 874.6,245.8 884.7,243.8 Q 894.9,241.9 905.1,240.3 Q 915.3,238.7 925.4,236.9 Q 935.6,235.1 945.8,231.7 Q 955.9,228.3 966.1,222.8 Q 976.3,217.3 986.4,210.7 Q 996.6,204.1 1006.8,198.6 Q 1016.9,193.0 1027.1,189.5 Q 1037.3,186.0 1047.5,183.5 Q 1057.6,181.1 1067.8,177.1 Q 1078.0,173.0 1088.1,165.4 Q 1098.3,157.8 1108.5,146.9 Q 1118.6,136.0 1128.8,124.6 Q 1139.0,113.1 1149.2,104.6 Q 1159.3,96.1 1169.5,92.6 Q 1179.7,89.1 1189.8,90.0 T 1200.0,90.9 L 1200,300 L 0,300 Z" fill="url(#fillGrad)"/>
+        <path d="M 0.0,229.8 Q 0.0,229.8 10.2,230.2 Q 20.3,230.6 30.5,228.9 Q 40.7,227.2 50.8,223.9 Q 61.0,220.6 71.2,217.4 Q 81.4,214.1 91.5,211.8 Q 101.7,209.6 111.9,207.5 Q 122.0,205.4 132.2,201.0 Q 142.4,196.6 152.5,188.0 Q 162.7,179.4 172.9,166.7 Q 183.1,154.0 193.2,140.2 Q 203.4,126.3 213.6,115.0 Q 223.7,103.8 233.9,97.5 Q 244.1,91.2 254.2,89.7 Q 264.4,88.1 274.6,89.3 Q 284.7,90.5 294.9,92.3 Q 305.1,94.1 315.3,96.1 Q 325.4,98.1 335.6,101.2 Q 345.8,104.3 355.9,109.3 Q 366.1,114.2 376.3,120.2 Q 386.4,126.3 396.6,131.2 Q 406.8,136.1 416.9,137.9 Q 427.1,139.7 437.3,138.3 Q 447.5,136.8 457.6,134.4 Q 467.8,132.0 478.0,131.6 Q 488.1,131.2 498.3,134.6 Q 508.5,137.9 518.6,144.0 Q 528.8,150.1 539.0,156.0 Q 549.2,162.0 559.3,165.2 Q 569.5,168.4 579.7,168.3 Q 589.8,168.2 600.0,166.3 Q 610.2,164.4 620.3,162.8 Q 630.5,161.2 640.7,160.8 Q 650.8,160.3 661.0,160.3 Q 671.2,160.3 681.4,159.6 Q 691.5,158.9 701.7,157.7 Q 711.9,156.5 722.0,156.7 Q 732.2,156.9 742.4,160.9 Q 752.5,165.0 762.7,173.7 Q 772.9,182.5 783.1,194.3 Q 793.2,206.1 803.4,217.3 Q 813.6,228.4 823.7,235.7 Q 833.9,243.0 844.1,244.5 Q 854.2,246.0 864.4,245.9 Q 874.6,245.8 884.7,243.8 Q 894.9,241.9 905.1,240.3 Q 915.3,238.7 925.4,236.9 Q 935.6,235.1 945.8,231.7 Q 955.9,228.3 966.1,222.8 Q 976.3,217.3 986.4,210.7 Q 996.6,204.1 1006.8,198.6 Q 1016.9,193.0 1027.1,189.5 Q 1037.3,186.0 1047.5,183.5 Q 1057.6,181.1 1067.8,177.1 Q 1078.0,173.0 1088.1,165.4 Q 1098.3,157.8 1108.5,146.9 Q 1118.6,136.0 1128.8,124.6 Q 1139.0,113.1 1149.2,104.6 Q 1159.3,96.1 1169.5,92.6 Q 1179.7,89.1 1189.8,90.0 T 1200.0,90.9" fill="none" stroke="#4696FF" stroke-width="3.5" stroke-linecap="round"/>
+        <circle r="9" fill="#FF2D2D">
+          <animateMotion dur="9s" repeatCount="indefinite"
+            path="M 0.0,229.8 Q 0.0,229.8 10.2,230.2 Q 20.3,230.6 30.5,228.9 Q 40.7,227.2 50.8,223.9 Q 61.0,220.6 71.2,217.4 Q 81.4,214.1 91.5,211.8 Q 101.7,209.6 111.9,207.5 Q 122.0,205.4 132.2,201.0 Q 142.4,196.6 152.5,188.0 Q 162.7,179.4 172.9,166.7 Q 183.1,154.0 193.2,140.2 Q 203.4,126.3 213.6,115.0 Q 223.7,103.8 233.9,97.5 Q 244.1,91.2 254.2,89.7 Q 264.4,88.1 274.6,89.3 Q 284.7,90.5 294.9,92.3 Q 305.1,94.1 315.3,96.1 Q 325.4,98.1 335.6,101.2 Q 345.8,104.3 355.9,109.3 Q 366.1,114.2 376.3,120.2 Q 386.4,126.3 396.6,131.2 Q 406.8,136.1 416.9,137.9 Q 427.1,139.7 437.3,138.3 Q 447.5,136.8 457.6,134.4 Q 467.8,132.0 478.0,131.6 Q 488.1,131.2 498.3,134.6 Q 508.5,137.9 518.6,144.0 Q 528.8,150.1 539.0,156.0 Q 549.2,162.0 559.3,165.2 Q 569.5,168.4 579.7,168.3 Q 589.8,168.2 600.0,166.3 Q 610.2,164.4 620.3,162.8 Q 630.5,161.2 640.7,160.8 Q 650.8,160.3 661.0,160.3 Q 671.2,160.3 681.4,159.6 Q 691.5,158.9 701.7,157.7 Q 711.9,156.5 722.0,156.7 Q 732.2,156.9 742.4,160.9 Q 752.5,165.0 762.7,173.7 Q 772.9,182.5 783.1,194.3 Q 793.2,206.1 803.4,217.3 Q 813.6,228.4 823.7,235.7 Q 833.9,243.0 844.1,244.5 Q 854.2,246.0 864.4,245.9 Q 874.6,245.8 884.7,243.8 Q 894.9,241.9 905.1,240.3 Q 915.3,238.7 925.4,236.9 Q 935.6,235.1 945.8,231.7 Q 955.9,228.3 966.1,222.8 Q 976.3,217.3 986.4,210.7 Q 996.6,204.1 1006.8,198.6 Q 1016.9,193.0 1027.1,189.5 Q 1037.3,186.0 1047.5,183.5 Q 1057.6,181.1 1067.8,177.1 Q 1078.0,173.0 1088.1,165.4 Q 1098.3,157.8 1108.5,146.9 Q 1118.6,136.0 1128.8,124.6 Q 1139.0,113.1 1149.2,104.6 Q 1159.3,96.1 1169.5,92.6 Q 1179.7,89.1 1189.8,90.0 T 1200.0,90.9"/>
+        </circle>
+        <circle r="16" fill="#FF2D2D" opacity="0.25">
+          <animateMotion dur="9s" repeatCount="indefinite"
+            path="M 0.0,229.8 Q 0.0,229.8 10.2,230.2 Q 20.3,230.6 30.5,228.9 Q 40.7,227.2 50.8,223.9 Q 61.0,220.6 71.2,217.4 Q 81.4,214.1 91.5,211.8 Q 101.7,209.6 111.9,207.5 Q 122.0,205.4 132.2,201.0 Q 142.4,196.6 152.5,188.0 Q 162.7,179.4 172.9,166.7 Q 183.1,154.0 193.2,140.2 Q 203.4,126.3 213.6,115.0 Q 223.7,103.8 233.9,97.5 Q 244.1,91.2 254.2,89.7 Q 264.4,88.1 274.6,89.3 Q 284.7,90.5 294.9,92.3 Q 305.1,94.1 315.3,96.1 Q 325.4,98.1 335.6,101.2 Q 345.8,104.3 355.9,109.3 Q 366.1,114.2 376.3,120.2 Q 386.4,126.3 396.6,131.2 Q 406.8,136.1 416.9,137.9 Q 427.1,139.7 437.3,138.3 Q 447.5,136.8 457.6,134.4 Q 467.8,132.0 478.0,131.6 Q 488.1,131.2 498.3,134.6 Q 508.5,137.9 518.6,144.0 Q 528.8,150.1 539.0,156.0 Q 549.2,162.0 559.3,165.2 Q 569.5,168.4 579.7,168.3 Q 589.8,168.2 600.0,166.3 Q 610.2,164.4 620.3,162.8 Q 630.5,161.2 640.7,160.8 Q 650.8,160.3 661.0,160.3 Q 671.2,160.3 681.4,159.6 Q 691.5,158.9 701.7,157.7 Q 711.9,156.5 722.0,156.7 Q 732.2,156.9 742.4,160.9 Q 752.5,165.0 762.7,173.7 Q 772.9,182.5 783.1,194.3 Q 793.2,206.1 803.4,217.3 Q 813.6,228.4 823.7,235.7 Q 833.9,243.0 844.1,244.5 Q 854.2,246.0 864.4,245.9 Q 874.6,245.8 884.7,243.8 Q 894.9,241.9 905.1,240.3 Q 915.3,238.7 925.4,236.9 Q 935.6,235.1 945.8,231.7 Q 955.9,228.3 966.1,222.8 Q 976.3,217.3 986.4,210.7 Q 996.6,204.1 1006.8,198.6 Q 1016.9,193.0 1027.1,189.5 Q 1037.3,186.0 1047.5,183.5 Q 1057.6,181.1 1067.8,177.1 Q 1078.0,173.0 1088.1,165.4 Q 1098.3,157.8 1108.5,146.9 Q 1118.6,136.0 1128.8,124.6 Q 1139.0,113.1 1149.2,104.6 Q 1159.3,96.1 1169.5,92.6 Q 1179.7,89.1 1189.8,90.0 T 1200.0,90.9"/>
+        </circle>
+      </svg>
+      <div class="chart-readout">
+        <div class="readout-item">
+          <div class="label">Speed</div>
+          <div class="value red">41 <span style="font-size:0.8rem;">km/h</span></div>
+        </div>
+        <div class="readout-item">
+          <div class="label">Gradient</div>
+          <div class="value blue">-3.2 <span style="font-size:0.8rem;">%</span></div>
+        </div>
+        <div class="readout-item">
+          <div class="label">Elevation</div>
+          <div class="value blue">312 <span style="font-size:0.8rem;">m</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="wrap">
+    <div class="stat"><b>0</b> uploads — everything renders on-device</div>
+    <div class="stat"><b>6</b> languages, with more on the way</div>
+    <div class="stat"><b>8</b> overlay layouts to choose from</div>
+    <div class="stat"><b>30s</b> segments, ready for Strava</div>
+  </div>
+</div>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">// how it works</div>
+      <h2>Three steps. No cloud in sight.</h2>
+      <p>Contour follows the same flow every time — pick your files, choose how it looks, generate. Nothing is uploaded at any point.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num mono">01</div>
+        <h3>Pick your files</h3>
+        <p>A FIT file from your Garmin or cycling computer, and the matching video clip straight from your camera.</p>
+      </div>
+      <div class="step">
+        <div class="num mono">02</div>
+        <h3>Set your layout and sync</h3>
+        <p>Choose where the overlay sits. Tap the map to mark where your video starts, or let Contour work it out automatically.</p>
+      </div>
+      <div class="step">
+        <div class="num mono">03</div>
+        <h3>Generate</h3>
+        <p>Your video renders right there on your phone, overlay baked in, ready to view, share, or split for Strava.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">// what's inside</div>
+      <h2>Built for the ride, not the upload.</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-lead">
+        <div class="tag">Privacy by construction</div>
+        <h3>Your ride never leaves your phone.</h3>
+        <p>There's no server, no account, no upload step. Contour reads your files, renders the overlay, and that's it — the same privacy model as editing a photo in your gallery app.</p>
+      </div>
+      <div class="feature-small-grid">
+        <div class="feature-small">
+          <h3>The hill ahead</h3>
+          <p>A live elevation chart tracks exactly where you are on the climb as the video plays.</p>
+        </div>
+        <div class="feature-small">
+          <h3>Ready for Strava</h3>
+          <p>Split any finished video into 30-second segments, saved where Strava's own uploader can find them.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-small" style="margin-top: 20px;">
+      <h3>Speaks your language</h3>
+      <p>Contour's interface switches fully between six languages, with the choice remembered permanently.</p>
+      <div class="lang-pills">
+        <span class="lang-pill">English</span>
+        <span class="lang-pill">日本語</span>
+        <span class="lang-pill">Français</span>
+        <span class="lang-pill">Deutsch</span>
+        <span class="lang-pill">Español</span>
+        <span class="lang-pill">ไทย</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <h2>Ready when you are.</h2>
+    <p>Contour is heading to Google Play. Leave your email and we'll let you know the moment it's live.</p>
+    <a class="btn btn-primary" href="mailto:admin@contour-map.com?subject=Notify%20me%20when%20Contour%20launches">Get notified at launch</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand-mini">Contour</div>
+    <div class="foot-links">
+      <a href="https://privacy.contour-map.com">Privacy Policy</a>
+      <a href="mailto:admin@contour-map.com">admin@contour-map.com</a>
+      <span>&copy; 2026 Contour</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
