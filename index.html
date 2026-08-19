@@ -289,6 +289,53 @@
     color: var(--muted);
   }
 
+  /* ---------- VIDEO ---------- */
+  .video-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 24px;
+  }
+  .video-card video {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 640px;
+    object-fit: contain;
+    background: #000;
+    margin: 0 auto;
+  }
+
+  /* ---------- PLAY STORE BADGE ---------- */
+  .store-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border: 2px solid var(--border);
+    border-radius: 2px;
+    background: var(--surface);
+  }
+  .store-badge svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .store-badge .store-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .store-badge .store-text .small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .store-badge .store-text .big {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
   .lang-pills {
     display: flex;
     flex-wrap: wrap;
@@ -504,41 +551,42 @@
     </div>
     <div class="screenshots-grid">
       <div class="screenshot-card">
-        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787145630/WhatsApp_Image_2026-08-19_at_14.01.51_mggrim.jpg" alt="Contour app screen">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787146546/WhatsApp_Image_2026-08-19_at_14.01.51_wampql.jpg" alt="Contour app screen">
         <div class="screenshot-caption">
           <div class="step-label">Step 1</div>
           <p>Pick your files and get started.</p>
         </div>
       </div>
       <div class="screenshot-card">
-        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787145630/WhatsApp_Image_2026-08-19_at_14.01.52_1_obdhtf.jpg" alt="Contour app screen">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787147339/WhatsApp_Image_2026-08-19_at_14.48.24_divhgh.jpg" alt="Contour app screen">
         <div class="screenshot-caption">
           <div class="step-label">Step 2</div>
           <p>Choose your layout and style.</p>
         </div>
       </div>
       <div class="screenshot-card">
-        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787145630/WhatsApp_Image_2026-08-19_at_14.01.52_q2gxc4.jpg" alt="Contour app screen">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787146546/WhatsApp_Image_2026-08-19_at_14.01.52_1_aoasyn.jpg" alt="Contour app screen">
         <div class="screenshot-caption">
           <div class="step-label">Sync it up</div>
           <p>Tap the map to mark where your video starts.</p>
         </div>
       </div>
       <div class="screenshot-card">
-        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787145631/WhatsApp_Image_2026-08-19_at_14.01.52_3_c8zi4q.jpg" alt="Contour app screen">
-        <div class="screenshot-caption">
-          <div class="step-label">Rendering</div>
-          <p>Processed entirely on your phone.</p>
-        </div>
-      </div>
-      <div class="screenshot-card">
-        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787145631/WhatsApp_Image_2026-08-19_at_14.01.52_2_hzrxhm.jpg" alt="Contour app screen">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787146546/WhatsApp_Image_2026-08-19_at_14.01.52_3_mkyplz.jpg" alt="Contour app screen">
         <div class="screenshot-caption">
           <div class="step-label">Done</div>
           <p>Ready to view, share, or split for Strava.</p>
         </div>
       </div>
     </div>
+
+    <div class="video-card">
+      <video controls playsinline preload="metadata">
+        <source src="https://res.cloudinary.com/dyznfqowe/video/upload/v1787144839/WhatsApp_Video_2026-08-19_at_14.06.36_gz9zc2.mp4" type="video/mp4">
+        Your browser doesn't support embedded video — <a href="https://res.cloudinary.com/dyznfqowe/video/upload/v1787144839/WhatsApp_Video_2026-08-19_at_14.06.36_gz9zc2.mp4">watch it directly</a> instead.
+      </video>
+    </div>
+
   </div>
 </section>
 
@@ -547,6 +595,19 @@
     <h2>Ready when you are.</h2>
     <p>Contour is heading to Google Play. Leave your email and we'll let you know the moment it's live.</p>
     <a class="btn btn-primary" href="mailto:admin@contour-map.com?subject=Notify%20me%20when%20Contour%20launches">Get notified at launch</a>
+    <div style="margin-top: 20px;">
+      <div class="store-badge" style="color: var(--blue);">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="6">
+          <rect x="30" y="10" width="40" height="80" rx="6"/>
+          <line x1="30" y1="75" x2="70" y2="75"/>
+          <circle cx="50" cy="83" r="3" fill="currentColor" stroke="none"/>
+        </svg>
+        <div class="store-text">
+          <span class="small">Coming to</span>
+          <span class="big">Google Play</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
