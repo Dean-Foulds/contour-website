@@ -1,7 +1,3 @@
-
-
-
-Contour landing · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,11 +18,11 @@ Contour landing · HTML
     --red: #FF2D2D;
     --border: #253544;
   }
- 
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
- 
+
   html { scroll-behavior: smooth; }
- 
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -34,25 +30,25 @@ Contour landing · HTML
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
- 
+
   h1, h2, h3, .display {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
     letter-spacing: -0.01em;
   }
- 
+
   .mono {
     font-family: 'JetBrains Mono', monospace;
   }
- 
+
   a { color: inherit; text-decoration: none; }
- 
+
   .wrap {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 28px;
   }
- 
+
   /* ---------- NAV ---------- */
   nav {
     display: flex;
@@ -76,7 +72,7 @@ Contour landing · HTML
     color: var(--muted);
   }
   .navlinks a:hover { color: var(--text); }
- 
+
   /* ---------- HERO ---------- */
   .hero {
     position: relative;
@@ -135,7 +131,7 @@ Contour landing · HTML
     border: 1px solid var(--border);
   }
   .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
- 
+
   /* Hero chart visual */
   .chart-visual {
     position: relative;
@@ -168,7 +164,7 @@ Contour landing · HTML
   }
   .readout-item .value.blue { color: var(--blue); }
   .readout-item .value.red { color: var(--red); }
- 
+
   /* ---------- STATS STRIP ---------- */
   .stats-strip {
     border-top: 1px solid var(--border);
@@ -187,14 +183,14 @@ Contour landing · HTML
     color: var(--muted);
   }
   .stat b { color: var(--text); font-weight: 500; }
- 
+
   /* ---------- HOW IT WORKS ---------- */
   .section { padding: 90px 0; }
   .section-head { max-width: 560px; margin-bottom: 54px; }
   .section-head .eyebrow { margin-bottom: 12px; }
   .section-head h2 { font-size: 2rem; margin-bottom: 14px; }
   .section-head p { color: var(--muted); font-size: 1rem; }
- 
+
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -214,7 +210,7 @@ Contour landing · HTML
   }
   .step h3 { font-size: 1.15rem; margin-bottom: 10px; }
   .step p { color: var(--muted); font-size: 0.92rem; }
- 
+
   /* ---------- FEATURES ---------- */
   .features-grid {
     display: grid;
@@ -241,7 +237,7 @@ Contour landing · HTML
   }
   .feature-lead h3 { font-size: 1.5rem; margin-bottom: 10px; }
   .feature-lead p { color: var(--muted); max-width: 400px; }
- 
+
   .feature-small-grid {
     display: grid;
     grid-template-rows: repeat(2, 1fr);
@@ -255,7 +251,44 @@ Contour landing · HTML
   }
   .feature-small h3 { font-size: 1.05rem; margin-bottom: 8px; }
   .feature-small p { color: var(--muted); font-size: 0.9rem; }
- 
+
+  /* ---------- SCREENSHOTS ---------- */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .screenshot-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .screenshot-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 19.5;
+    object-fit: cover;
+    background: var(--surface-2);
+  }
+  .screenshot-caption {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .screenshot-caption .step-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .screenshot-caption p {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
   .lang-pills {
     display: flex;
     flex-wrap: wrap;
@@ -270,7 +303,7 @@ Contour landing · HTML
     border-radius: 20px;
     color: var(--muted);
   }
- 
+
   /* ---------- CLOSING CTA ---------- */
   .closing {
     text-align: center;
@@ -279,7 +312,7 @@ Contour landing · HTML
   }
   .closing h2 { font-size: 2.2rem; margin-bottom: 16px; }
   .closing p { color: var(--muted); margin-bottom: 32px; }
- 
+
   /* ---------- FOOTER ---------- */
   footer {
     border-top: 1px solid var(--border);
@@ -305,23 +338,24 @@ Contour landing · HTML
     color: var(--muted);
   }
   footer .foot-links a:hover { color: var(--text); }
- 
+
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 860px) {
     .hero-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 2.3rem; }
     .steps { grid-template-columns: 1fr; }
     .features-grid { grid-template-columns: 1fr; }
+    .screenshots-grid { grid-template-columns: 1fr; }
     .navlinks { display: none; }
   }
- 
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
 </style>
 </head>
 <body>
- 
+
 <div class="wrap">
   <nav>
     <div class="brand">
@@ -338,7 +372,7 @@ Contour landing · HTML
     </div>
   </nav>
 </div>
- 
+
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
@@ -350,7 +384,7 @@ Contour landing · HTML
         <a class="btn btn-ghost" href="#how">See how it works</a>
       </div>
     </div>
- 
+
     <div class="chart-visual">
       <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -387,7 +421,7 @@ Contour landing · HTML
     </div>
   </div>
 </section>
- 
+
 <div class="stats-strip">
   <div class="wrap">
     <div class="stat"><b>0</b> uploads — everything renders on-device</div>
@@ -396,7 +430,7 @@ Contour landing · HTML
     <div class="stat"><b>30s</b> segments, ready for Strava</div>
   </div>
 </div>
- 
+
 <section class="section" id="how">
   <div class="wrap">
     <div class="section-head">
@@ -423,7 +457,7 @@ Contour landing · HTML
     </div>
   </div>
 </section>
- 
+
 <section class="section" id="features">
   <div class="wrap">
     <div class="section-head">
@@ -447,7 +481,7 @@ Contour landing · HTML
         </div>
       </div>
     </div>
- 
+
     <div class="feature-small" style="margin-top: 20px;">
       <h3>Speaks your language</h3>
       <p>Contour's interface switches fully between six languages, with the choice remembered permanently.</p>
@@ -462,7 +496,46 @@ Contour landing · HTML
     </div>
   </div>
 </section>
- 
+
+<section class="section" id="screenshots" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">// see it in action</div>
+      <h2>The real app, not a mockup.</h2>
+    </div>
+    <div class="screenshots-grid">
+      <div class="screenshot-card">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787144645/WhatsApp_Image_2026-08-17_at_09.12.16_gjibfv.jpg" alt="Contour layout and settings screen, showing position, style, colour theme, and speed unit options">
+        <div class="screenshot-caption">
+          <div class="step-label">Step 2 of 3</div>
+          <p>Pick where the overlay sits, how it looks, and your speed unit — all in one screen.</p>
+        </div>
+      </div>
+      <div class="screenshot-card">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787144645/WhatsApp_Image_2026-08-17_at_09.12.16_1_sxcv4b.jpg" alt="Contour position picker, showing Bottom Left, Bottom Right, Top Left, Top Right, and Center options">
+        <div class="screenshot-caption">
+          <div class="step-label">Five positions</div>
+          <p>Every layout works with every position — corner, or centred large.</p>
+        </div>
+      </div>
+      <div class="screenshot-card">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787144645/WhatsApp_Image_2026-08-17_at_09.12.15_eafeej.jpg" alt="Contour completed render screen, showing View output, Share output, Browse all outputs, and Start over buttons">
+        <div class="screenshot-caption">
+          <div class="step-label">Done</div>
+          <p>Rendered right there on your phone — ready to view, share, or split for Strava.</p>
+        </div>
+      </div>
+      <div class="screenshot-card">
+        <img src="https://res.cloudinary.com/dyznfqowe/image/upload/v1787144645/WhatsApp_Image_2026-08-17_at_09.12.16_2_jmeqh9.jpg" alt="Contour app screen">
+        <div class="screenshot-caption">
+          <div class="step-label">More control</div>
+          <p>Fine-tune the sync, adjust the offset, get it exactly right.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="closing">
   <div class="wrap">
     <h2>Ready when you are.</h2>
@@ -470,7 +543,7 @@ Contour landing · HTML
     <a class="btn btn-primary" href="mailto:admin@contour-map.com?subject=Notify%20me%20when%20Contour%20launches">Get notified at launch</a>
   </div>
 </section>
- 
+
 <footer>
   <div class="wrap">
     <div class="brand-mini">Contour</div>
@@ -481,35 +554,6 @@ Contour landing · HTML
     </div>
   </div>
 </footer>
- 
+
 </body>
 </html>
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
